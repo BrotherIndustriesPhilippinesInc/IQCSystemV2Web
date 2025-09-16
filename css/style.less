@@ -6,11 +6,18 @@
 @secondary-text: #A0A7C2;
 @tertiary-text: #FFFFFF;
 
-@primary-misc: #2DD5B9;
+@primary-misc: #005CAB;
 @secondary-misc: #8DCEE3;
 @tertiary-misc: #485081;
 
 @danger: #FF0000;
+
+:root {
+--bs-heading-color: @primary-text !important;
+--bs-nav-link-color: @primary-text !important;
+--bs-nav-tabs-link-active-color: @primary-text !important;
+--bs-primary-rgb: @primary-text !important;
+}
 
 #error-404{
     color: @primary-text !important;
@@ -23,8 +30,13 @@
 .secondary-background{
     background-color: @secondary-background !important;
 }
+
 .secondary-text{
     color: @secondary-text !important;
+}
+
+.tertiary-text{
+    color: @tertiary-text !important;
 }
 
 .text-danger, .border-danger{
@@ -43,16 +55,16 @@
     color: @primary-misc !important;
 }
 
-.btn{
-    background-color: @secondary-background !important;
-    border-color: @primary-misc !important;
-}
-
 .btn:hover{
     border: solid 1px @primary-text !important;
     .btn-span{
         text-decoration: underline !important;
     }
+}
+
+input, select{
+    background-color: @secondary-background !important;
+    border-color: @primary-misc !important;
 }
 
 .text-primary{
@@ -110,9 +122,9 @@ input[type="text"]::-webkit-input-placeholder {
     text-decoration: none !important;
 }
 input:focus, textarea:focus, select:focus {
-    outline: none !important;
+    /* outline: none !important;
     box-shadow: none !important;
-    border: none !important;
+    border: none !important; */
 }
 
 .modal-content{
@@ -130,10 +142,12 @@ input:focus, textarea:focus, select:focus {
 .plan-details{
     font-size: 12px;
 }
+
 .plan-detail-textbox{
     font-size: 32px;
     text-align: center;
 }
+
 .section-details-label{
     font-size: 12px;
     color: @primary-misc;
@@ -141,6 +155,7 @@ input:focus, textarea:focus, select:focus {
     white-space: nowrap;
     padding-right: 8px;
 }
+
 .flatpickr-no-calendar{
     background-color: @secondary-background !important;
     border: 0;
@@ -154,6 +169,7 @@ input:focus, textarea:focus, select:focus {
 .causeCategories-span, .actionCategories-span{
     font-size: 10px;
 }
+
 .popover-body{
     background-color: @secondary-background !important;
     border-radius: 8px;
@@ -166,17 +182,11 @@ input:focus, textarea:focus, select:focus {
 
 /* TABLES */
 table.dataTable{
-    border-collapse: collapse !important;
-}
-td, tr, th{
-    border-color: @secondary-text !important;
-    border-width: 2px !important;
-    border-collapse: collapse;
-    padding: 4px;
+
 }
 
-th{
-    padding: 16px;
+td, tr, th{
+    color: @primary-text !important;
 }
 
 h3{
@@ -185,7 +195,7 @@ h3{
 
 a{
     text-decoration: none !important;
-    color: @tertiary-text !important;
+    color: @primary-text !important;
     font-weight: 600;
 }
 
@@ -260,6 +270,11 @@ a{
     height: 48px;
 }
 
+.nav-item div{
+    color: @tertiary-text !important;
+    
+}
+
 .nav-item:hover{
     font-size: 18px;
     font-weight: bold;
@@ -268,4 +283,61 @@ a{
 
 .accordion-button:not(.collapsed)::after {
     background-image: var(--bs-accordion-btn-icon) !important;
+}
+
+body{
+    color: @primary-text !important;
+}
+
+.page-link.active, .active > .page-link{
+    background-color: @primary-misc !important;
+    border-color: @primary-misc !important;
+}
+
+.pagination{
+    --bs-pagination-color: @primary-misc !important;
+}
+
+.form-select{
+    color: @primary-text !important;
+}
+.selected{
+    background-color: @primary-misc !important;
+    color: @tertiary-text !important;
+}
+.selected > td{
+    background-color: @primary-misc !important;
+    color: @tertiary-text !important;
+}
+
+#generalInfo-trigger, #generalInfo-trigger-container{
+    width: 24px !important;
+    height: 24px !important;
+}
+.pointer{
+    cursor: pointer !important;
+}
+
+.nav-link{
+    color: @primary-text !important;
+    font-weight: 500 !important;
+}
+.nav-link.active{
+    transition: all 0.3s ease-in-out !important;
+    font-size: 18px !important;
+}
+
+.tab-pane{
+    height: calc(100vh - (88px + 33.59px + 45px + 8px)) !important;
+}
+
+.start-0 {
+    left: 0 !important;
+}
+.top-40 {
+    top: 45% !important;
+}
+
+.top-32 {
+    top: 32% !important;
 }

@@ -8,7 +8,7 @@
 
             <i id="menu-icon" class="icon fa-solid fa-bars" data-bs-toggle="offcanvas" data-bs-target="#offcanvasDark" aria-controls="offcanvasDark"></i>
 
-            <a id="logo" href="/iqcv2"><h1>IQC System</h1></a>
+            <a id="logo" href="/iqcv2"><h1 class="tertiary-text">IQC System</h1></a>
         </div>
 
         <!-- Second Column -->

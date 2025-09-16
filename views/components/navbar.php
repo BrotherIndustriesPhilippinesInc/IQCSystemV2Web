@@ -10,7 +10,7 @@ function isActive($urlPart) {
   </div>
   <div class="d-flex justify-content-center mb-4">
     <span data-bs-toggle="offcanvas" data-bs-target="#offcanvasDark" aria-controls="offcanvasDark">
-        <img src="/iqcv2/resources/logo/iqc_logo.png" style="mix-blend-mode: screen;" alt="logo-icon">
+        <img src="/iqcv2/resources/logo/iqcV2.png" style="mix-blend-mode: screen; width: 160px; height: 160px;" alt="logo-icon">
     </span>
   </div>
   <div class="offcanvas-body p-0">
@@ -64,6 +64,11 @@ function isActive($urlPart) {
         <div id="collapseFour" class="accordion-collapse <?= isActive('/manage/')[0] ?>" data-bs-parent="#accordionExample">
           <div class="accordion-body">
             <a class="nav-item" href="/iqcv2/manage/inspection_approval"><div>Inspection Approval</div></a>
+          </div>
+        </div>
+        <div id="collapseFour" class="accordion-collapse <?= isActive('/manage/')[0] ?>" data-bs-parent="#accordionExample">
+          <div class="accordion-body">
+            <a class="nav-item" href="/iqcv2/manage/users"><div>Users</div></a>
           </div>
         </div>
       </div>

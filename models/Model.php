@@ -3,11 +3,11 @@ require_once __DIR__ . '/../interfaces/IModel.php';
 
 abstract class Model implements IModel {
     protected PDO $conn;
-    private static array $allowedTables = ['pol', 'test_table']; // ✅ Prevents SQL Injection
-    private static string $host = '10.248.1.152';
+    private static array $allowedTables = ['checkitems']; // ✅ Prevents SQL Injection
+    private static string $host = '10.248.1.125';
     private static string $username = 'postgres';
-    private static string $password = '1234';
-    private static string $database = 'HOMS_V2';
+    private static string $password = 'iqcserver';
+    private static string $database = 'IQC_SYSTEM';
 
     public function __construct() {
         try {
