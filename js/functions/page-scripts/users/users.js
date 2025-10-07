@@ -5,7 +5,7 @@ $(function(){
 
     const tableParams = {
         ajax:{
-            url: "http://apbiphbpswb01/IQCSystemAPI/api/SystemApproverLists", // your endpoint
+            url: "http://apbiphiqcwb01:1116/api/SystemApproverLists", // your endpoint
             method: "GET",
             dataSrc: function (json) {
                 return json; // extract the data array from your JSON
@@ -21,6 +21,7 @@ $(function(){
             { data: 'employeeNumber', visible: true, searchable: true  },
             { data: 'fullName', visible: true, searchable: true  },
             { data: 'adid', visible: true, searchable: true  },
+            { data: 'mesName', visible: true, searchable: true  },
             { data: 'emailAddress', visible: true, searchable: true  },
             { data: 'section', visible: true, searchable: true  },
             { data: 'position', visible: true, searchable: true  },
@@ -30,7 +31,7 @@ $(function(){
                 render: function (data, type, row) {
                     return `
                         <button class="btn btn-primary" data-user_id="${row.id}" data-bs-toggle="modal" data-bs-target="#userEditModal">Edit</button>
-                        <button class="deleteUser btn text-primary" data-user_id="${row.id}">Delete</button>
+                        <button class="deleteUser btn text-primary" data-user_id="${row.employeeNumber}">Delete</button>
                     `;
                 }
             }
@@ -55,9 +56,10 @@ $(function(){
     $('#saveUser').on('click', async function(){
         const userData = {
             employeeNumber: $('#employeeNumber').val(),
+            mesName: $('#emesName').val(),
         };
         
-        await apiCall('http://apbiphbpswb01/IQCSystemAPI/api/SystemApproverLists', 'POST', userData).then((response) => {
+        await apiCall('http://apbiphiqcwb01:1116/api/SystemApproverLists', 'POST', userData).then((response) => {
             if(response && response.id){
                 Swal.fire({
                     icon: 'success',
@@ -92,17 +94,22 @@ $(function(){
             confirmButtonText: 'Yes, delete it!'
         });
         if (result.isConfirmed) {
-            await apiCall(`http://apbiphbpswb01/IQCSystemAPI/api/SystemApproverLists/delete/${userId}`, 'POST').then((response) => {
-                if(response.status === 200){
+            await apiCall(
+                "http://apbiphiqcwb01:1116/api/SystemApproverLists/delete-approver",
+                "POST",
+                { employeeNumber: userId }
+            ).then((response) => {
+                if (response.status === 200) {
                     Swal.fire({
                         icon: 'success',
                         title: 'User deleted successfully',
                         timerProgressBar: true,
                         timer: 1000
                     });
-                    table.ajax.reload(null, false); // Reload table data without resetting pagination
+                    table.ajax.reload(null, false);
                 }
             });
+
         }
     });
 

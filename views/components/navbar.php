@@ -10,7 +10,7 @@ function isActive($urlPart) {
   </div>
   <div class="d-flex justify-content-center mb-4">
     <span data-bs-toggle="offcanvas" data-bs-target="#offcanvasDark" aria-controls="offcanvasDark">
-        <img src="/iqcv2/resources/logo/iqcV2.png" style="mix-blend-mode: screen; width: 160px; height: 160px;" alt="logo-icon">
+        <img src="/iqcv2/resources/logo/iqcV2.png" style="mix-blend-mode: plus-lighter; width: 160px; height: 160px;" alt="logo-icon">
     </span>
   </div>
   <div class="offcanvas-body p-0">
@@ -24,7 +24,8 @@ function isActive($urlPart) {
           </h2>
           <div id="collapseOne" class="accordion-collapse <?= isActive('/choose_lots/')[0] ?>" data-bs-parent="#accordionExample">
             <div class="accordion-body">
-              <a class="nav-item" href="/iqcv2/choose_lots/inspection_result"><div>Inspection Result</div></a>
+              <a class="nav-item" href="/iqcv2/choose_lots/inspection_result"><div>Parts for Inspect</div></a>
+              <a class="nav-item" href="/iqcv2/choose_lots/inspection_history"><div>Inspection History</div></a>
             </div>
           </div>
       </div>

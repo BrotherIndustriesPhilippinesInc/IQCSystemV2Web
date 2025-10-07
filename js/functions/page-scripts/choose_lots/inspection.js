@@ -69,6 +69,7 @@ import { sendToWebView } from "./../../WebViewInteraction.js";
 $(function(){
     openWinform();
 });
+
 function openWinform(){
     sendToWebView("openInspectionWinform",{});
 }

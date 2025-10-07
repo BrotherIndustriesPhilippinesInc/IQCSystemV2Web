@@ -65,6 +65,9 @@
             '/iqcv2/choose_lots/inspection_result' => function() {
                 include __DIR__ . '/views/pages/choose_lots/inspection_result.php';
             },
+            '/iqcv2/choose_lots/inspection_history' => function() {
+                include __DIR__ . '/views/pages/choose_lots/inspection_history.php';
+            },
             '/iqcv2/choose_lots/inspection_details' => function() {
                 include __DIR__ . '/views/pages/choose_lots/inspection_details.php';
             },
@@ -73,6 +76,9 @@
             },
             '/iqcv2/manage/inspection_approval' => function() {
                 include __DIR__ . '/views/pages/manage/inspection_approval.php';
+            },
+            '/iqcv2/registration/parts_information' => function() {
+                include __DIR__ . '/views/pages/registration/parts_information.php';
             },
         ];
 

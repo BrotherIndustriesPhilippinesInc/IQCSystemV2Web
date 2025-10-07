@@ -10,21 +10,18 @@
         require_once __DIR__ . "/../../components/header.php";
         require_once __DIR__ . '/../../components/navbar.php';
     ?>
-    <h3>Users</h3>
-    <div>
-        <button class="btn btn-primary" id="addUserBtn" data-bs-toggle="modal" data-bs-target="#userAddModal">Add User</button>
-    </div>
+    <h3>Parts Information</h3>
+
     <div id="table-container">
-        <table id="inspection-table" class="table table-hover">
+        <table id="approval-table" class="table table-hover">
             <thead>
                 <tr class= 'text-center'>
-                    <th scope="col">Employee Number</th>
-                    <th scope="col">Name</th>
-                    <th scope="col">ADID</th>
-                    <th scope="col">Mes Name</th>
-                    <th scope="col">Email Address</th>
-                    <th scope="col">Section</th>
-                    <th scope="col">Position</th>
+                    <th scope="col">Inspection Date</th>
+                    <th scope="col">Check Lot</th>
+                    <th scope="col">Partcode</th>
+                    <th scope="col">Inspector</th>
+                    <th scope="col">Is Approved</th>
+                    <th scope="col"></th>
                 </tr>
             </thead>
             <tbody>
@@ -41,17 +38,8 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <div class="mb-3">
-                    <label for="employeeNumber" class="form-label text-primary-misc">Employee Number</label>
-                    <input type="text" class="form-control" id="employeeNumber" placeholder="Ex: BIPH2019-03260">
-                </div>
-
-                <div>
-                    <label for="emesName" class="form-label text-primary-misc">EMES Name</label>
-                    <input type="text" class="form-control" id="emesName" placeholder="Ex: K. Talibutab (Be careful of spacing)">
-                </div>
-
-                    
+                <label for="employeeNumber" class="form-label text-primary-misc">Employee Number</label>
+                <input type="text" class="form-control" id="employeeNumber" placeholder="Ex: BIPH2019-03260">
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -63,4 +51,4 @@
 
 </body>
 
-<script type="module" defer src="/iqcv2/js/functions/page-scripts/users/users.js"></script>
+<script type="module" defer src="/iqcv2/js/functions/page-scripts/registration/parts_information.js"></script>

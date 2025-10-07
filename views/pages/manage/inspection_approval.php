@@ -20,7 +20,8 @@
                     <th scope="col">Check Lot</th>
                     <th scope="col">Partcode</th>
                     <th scope="col">Inspector</th>
-                    <th scope="col">Is Approved</th>
+                    <th scope="col">Supervisor</th>
+                    <!-- <th scope="col">Is Approved</th> -->
                     <th scope="col"></th>
                 </tr>
             </thead>

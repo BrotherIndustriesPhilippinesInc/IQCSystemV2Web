@@ -1,10 +1,14 @@
-
+import { sendToWebView } from "./../../WebViewInteraction.js";
 
 $(async function () {
     //INIT
+    let user = JSON.parse(localStorage.getItem("user"));
+    //console.table(user['Full_Name']);
+
+    
     let inspectionTable = $('#approval-table').DataTable({
         ajax: {
-            url: 'http://apbiphiqcwb01:1116/api/InspectionDetails',
+            url: `http://apbiphiqcwb01:1116/api/InspectionDetails/supervisor/${user['Full_Name']}`,
             dataSrc: ''
         },
         columns: [
@@ -12,7 +16,8 @@ $(async function () {
             { data: 'checkLot' },
             { data: 'partCode' },
             { data: 'checkUser' },
-            { data: 'isApproved' },
+            { data: 'supervisor' },
+            //{ data: 'isApproved' },
             {
                 data: null,
                 orderable: false,
@@ -26,15 +31,14 @@ $(async function () {
         ]
     });
 
+    setInterval(function () {
+        inspectionTable.ajax.reload(null, false); // false = keep paging
+    }, 5000); // 5 sec interval
+
     //EVENTS
     $(document).on('click', '.check-btn', function () {
-        window.open(
-            `http://ZZPDE31G:ZZPDE31G@10.248.1.10/BIPHMES/BenQGuru.eMES.Web.IQC/FIQCCheckResultMpNew.aspx?IQCLOT=${this.dataset.checklot}`,
-            "popupWindow",
-            "width=1280,height=720,scrollbars=yes"
-        );
+        sendToWebView("openApprovalWinform",{ checkLot: $(this).data("checklot") } );
     });
-
 
     //FUNCTIONS
 });
