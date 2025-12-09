@@ -9,21 +9,15 @@ $primaryButton = $button->primaryButton("testButton", "Fetch Data");
     <meta charset="UTF-8">
     <title>IQC Dashboard</title>
 
+    <!-- Flatpickr CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+
+    <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Optional: Flatpickr theme -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/themes/material_green.css">
-
-    <style>
-        .chart-container {
-            background: #fff;
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            margin-top: 25px;
-        }
-    </style>
 </head>
-
 <body class="bg-custom container-fluid">
 
 <?php 
@@ -34,28 +28,34 @@ $primaryButton = $button->primaryButton("testButton", "Fetch Data");
 <div class="container mt-4">
     <h2>Inspection Dashboard</h2>
 
+    <!-- Date Range Picker -->
     <input id="dateRange" type="text" placeholder="Select Date Range" class="form-control mb-3" style="max-width: 300px;">
+
+    <!-- Fetch Button -->
     <button id="testButton" class="btn btn-primary">Fetch Data</button>
 
+    <!-- Total Inspections Display -->
     <div class="mt-3">
         <h4>Total Inspections: <span id="totalInspections">0</span></h4>
     </div>
 
-    <div class="chart-container">
-        <canvas id="inspectionChart" height="150"></canvas>
+    <!-- Chart Container -->
+    <div class="card p-3 mb-4">
+        <canvas id="inspectionChart"></canvas>
     </div>
 
-    <div class="chart-container">
-        <canvas id="memberChart" height="150"></canvas>
+    <div class="card p-3 mb-4">
+        <canvas id="memberChart"></canvas>
     </div>
+
 </div>
 
+<!-- Flatpickr JS -->
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
 <script>
 document.addEventListener('DOMContentLoaded', () => {
 
-    // FLATPICKR
     flatpickr("#dateRange", {
         mode: "range",
         dateFormat: "Y-m-d"
@@ -71,23 +71,10 @@ document.addEventListener('DOMContentLoaded', () => {
     let inspectionChart = null;
     let memberChart = null;
 
-    function showLoading() {
-        if (!loadingOverlay) return;
-        btn.disabled = true;
-        loadingOverlay.style.display = "flex";
-        requestAnimationFrame(() => loadingOverlay.style.opacity = 1);
-    }
-
-    function hideLoading() {
-        if (!loadingOverlay) return;
-        btn.disabled = false;
-        loadingOverlay.style.opacity = 0;
-        setTimeout(() => loadingOverlay.style.display = "none", 200);
-    }
+    function showLoading() { loadingOverlay.style.display = "flex"; }
+    function hideLoading() { loadingOverlay.style.display = "none"; }
 
     async function fetchAll(startDate, endDate) {
-        if (!startDate) return alert("Select a valid date range baka!");
-
         showLoading();
         try {
             const [inspectionRes, approvalRes, memberRes] = await Promise.all([
@@ -95,10 +82,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 fetch(`http://apbiphiqcwb01:1116/api/Dashboard/approval-summary?startDate=${startDate}&endDate=${endDate}`),
                 fetch(`http://apbiphiqcwb01:1116/api/Dashboard/members?startDate=${startDate}&endDate=${endDate}`)
             ]);
-
-            if (!inspectionRes.ok || !approvalRes.ok || !memberRes.ok) {
-                throw new Error("Server returned an error");
-            }
 
             const inspectionData = await inspectionRes.json();
             const approvalData = await approvalRes.json();
@@ -111,7 +94,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         } catch (e) {
             console.error("Dashboard error:", e);
-            alert("Failed to load dashboard data.");
+            alert("Failed to fetch dashboard data.");
         } finally {
             hideLoading();
         }
@@ -180,53 +163,28 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // DEFAULT RANGE: PAST 7 DAYS
-    const today = new Date();
-    const past7 = new Date();
-    past7.setDate(today.getDate() - 7);
+    // LOAD IMMEDIATELY WITH TODAY’S DATE
+    const today = new Date().toISOString().split("T")[0];
+    document.getElementById("dateRange").value = `${today} to ${today}`;
 
-    const start = past7.toISOString().split("T")[0];
-    const end = today.toISOString().split("T")[0];
+    fetchAll(today, today);
 
-    document.getElementById("dateRange").value = `${start} to ${end}`;
-    fetchAll(start, end);
-
-    // BUTTON RELOAD
+    // ALLOW BUTTON RELOAD
     btn.addEventListener("click", () => {
         const [start, end] = document.getElementById("dateRange").value.split(" to ");
         fetchAll(start, end || start);
     });
 
-    // AUTO RELOAD EVERY 30 SECONDS
-    setInterval(() => {
-        const [start, end] = document.getElementById("dateRange").value.split(" to ");
-        fetchAll(start, end || start);
-    }, 30000);
-
-
 });
 </script>
 
+
 <div id="loadingOverlay" 
-    style="
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0,0,0,0.4);
-        display: none;
-        align-items: center;
-        justify-content: center;
-        z-index: 9999;
-        color: white;
-        font-size: 24px;
-        font-weight: bold;
-        opacity: 0;
-        transition: opacity 0.2s ease;">
+     style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.4);
+            display:flex;align-items:center;justify-content:center;z-index:9999;
+            color:white;font-size:24px;font-weight:bold;display:none;">
     Loading...
 </div>
-
 
 </body>
 </html>

@@ -8,6 +8,7 @@ $(async function () {
     
     let inspectionTable = $('#history-table').DataTable({
     serverSide: true,
+    
     ajax: {
         url: `http://apbiphiqcwb01:1116/api/InspectionDetails/datatable`,
         //url: `https://localhost:7246/api/InspectionDetails/datatable/`,
@@ -53,7 +54,15 @@ $(async function () {
                 `;
             }
         }
-    ]
+    ],
+    layout: {
+        topStart: {
+            buttons: ['colvis','copy', 'csv', 'excel', 'pdf', 'print'],
+        },
+        topEnd: ['search', 'pageLength'],
+    },
+    lengthMenu: [10, 25, 50, 100, 200, 500, 1000],
+
 });
 
 
