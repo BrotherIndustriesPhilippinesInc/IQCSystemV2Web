@@ -5,19 +5,20 @@ $(async function () {
     let user = JSON.parse(localStorage.getItem("user"));
     //console.table(user['Full_Name']);
 
-    
     let inspectionTable = $('#approval-table').DataTable({
         ajax: {
             url: `http://apbiphiqcwb01:1116/api/InspectionDetails/supervisor/${user['Full_Name']}`,
             dataSrc: ''
         },
         columns: [
+            { data: 'stockInCollectDate' },
             { data: 'iqcCheckDate' },
             { data: 'checkLot' },
             { data: 'partCode' },
+            { data: 'lotNo' },
             { data: 'checkUser' },
             { data: 'supervisor' },
-            //{ data: 'isApproved' },
+            { data: 'remarks' },
             {
                 data: null,
                 orderable: false,

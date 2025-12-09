@@ -48,7 +48,7 @@
 
                 <div>
                     <label for="emesName" class="form-label text-primary-misc">EMES Name</label>
-                    <input type="text" class="form-control" id="emesName" placeholder="Ex: K. Talibutab (Be careful of spacing)">
+                    <input type="text" class="form-control" id="emesName" placeholder="Ex: K.Talibutab (Be careful of spacing)">
                 </div>
 
                     

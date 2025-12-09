@@ -2,6 +2,7 @@
 node_modules/
 modules
 resources/pols
+resources/open_tool
 non_module_libraries
 
 zip

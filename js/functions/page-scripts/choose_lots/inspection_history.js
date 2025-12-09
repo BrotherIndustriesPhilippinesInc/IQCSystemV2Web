@@ -10,21 +10,37 @@ $(async function () {
     serverSide: true,
     ajax: {
         url: `http://apbiphiqcwb01:1116/api/InspectionDetails/datatable`,
-        // url: `https://localhost:7246/api/InspectionDetails/datatable/`,
+        //url: `https://localhost:7246/api/InspectionDetails/datatable/`,
         type: "POST",
         contentType: "application/json",
         data: function (d) {
-            return JSON.stringify(d); // send full DataTables params as JSON
+            return JSON.stringify(d);
         },
-        dataSrc: "data" // expect response to contain { data: [...] }
+        dataSrc: "data"
     },
     columns: [
+        { data: 'stockInCollectDate', title: 'Stock-In Date' },
         { data: 'iqcCheckDate', title: 'Inspection Date' },
         { data: 'checkLot', title: 'Check Lot' },
         { data: 'partCode', title: 'Part Code' },
+
+        // 💥 Single merged Vendor/Supplier column
+        {
+            data: 'vendorSupplierMerged',
+            title: 'Vendor / Supplier',
+            render: function (data, type, row) {
+                if (!data) return '';
+                // Replace newlines with <br> for multi-line display
+                return data.replace(/\n/g, '<br>');
+            }
+        },
+
+        { data: 'lotNo', title: 'Lot No' },
         { data: 'checkUser', title: 'Inspector' },
         { data: 'supervisor', title: 'Supervisor' },
         { data: 'approver', title: 'Approver' },
+        { data: 'remarks', title: 'Remarks' },
+
         {
             data: null,
             orderable: false,
@@ -39,6 +55,8 @@ $(async function () {
         }
     ]
 });
+
+
 
 
 setInterval(function () {

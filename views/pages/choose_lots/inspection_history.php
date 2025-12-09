@@ -16,12 +16,15 @@
         <table id="history-table" class="table table-hover">
             <thead>
                 <tr class='text-center'>
+                    <th scope="col">Stock-In Date</th>
                     <th scope="col">Inspection Date</th>
                     <th scope="col">Check Lot</th>
                     <th scope="col">Partcode</th>
+                    <th scope="col">Production Lot No.</th>
                     <th scope="col">Inspector</th>
                     <th scope="col">Supervisor</th>
                     <th scope="col">Approver</th>
+                    <th scope="col">Remarks</th>
                     <th scope="col"></th>
                 </tr>
             </thead>
