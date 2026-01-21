@@ -25,6 +25,7 @@
                     <th scope="col">Email Address</th>
                     <th scope="col">Section</th>
                     <th scope="col">Position</th>
+                    <th scope="col">Is Admin</th>
                 </tr>
             </thead>
             <tbody>
@@ -46,9 +47,16 @@
                     <input type="text" class="form-control" id="employeeNumber" placeholder="Ex: BIPH2019-03260">
                 </div>
 
-                <div>
+                <div class="mb-3">
                     <label for="emesName" class="form-label text-primary-misc">EMES Name</label>
                     <input type="text" class="form-control" id="emesName" placeholder="Ex: K.Talibutab (Be careful of spacing)">
+                </div>
+
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="isAdmin">
+                    <label class="form-check-label" for="isAdmin">
+                        Is Admin
+                    </label>
                 </div>
 
                     
@@ -61,6 +69,39 @@
         </div>
     </div>
 
+    <div id="userUpdateModal" class="modal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Update User</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label for="updateEmployeeNumber" class="form-label text-primary-misc">Employee Number</label>
+                    <input type="text" class="form-control" id="updateEmployeeNumber" placeholder="Ex: BIPH2019-03260" disabled>
+                </div>
+
+                <div class="mb-3">
+                    <label for="updateEmesName" class="form-label text-primary-misc">EMES Name</label>
+                    <input type="text" class="form-control" id="updateEmesName" placeholder="Ex: K.Talibutab (Be careful of spacing)">
+                </div>
+
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="updateIsAdmin">
+                    <label class="form-check-label" for="updateIsAdmin">
+                        Is Admin
+                    </label>
+                </div>
+            </div>
+            
+            <div class="modal-footer">
+                <input type="hidden" id="updateUserId" value="">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button id="updateUser" type="button" class="btn btn-primary">Update</button>
+            </div>
+        </div>
+    </div>
 </body>
 
 <script type="module" defer src="/iqcv2/js/functions/page-scripts/users/users.js"></script>

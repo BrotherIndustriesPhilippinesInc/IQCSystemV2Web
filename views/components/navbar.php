@@ -1,6 +1,18 @@
 <?php
+
 function isActive($urlPart) {
   return strpos($_SERVER['REQUEST_URI'], $urlPart) !== false ? ["collapse show","true", ""] : ["collapse", "false", "collapsed"];
+}
+
+$position = $_SESSION['position'];
+$eligible = false;
+
+$titles = ['Leader', 'Engineer', 'Staff', 'Supervisor', 'Manager'];
+foreach($titles as $title){
+  if(str_contains($position, $title)){
+    $eligible = true;
+    break;
+  }
 }
 ?>
 
@@ -16,19 +28,6 @@ function isActive($urlPart) {
   <div class="offcanvas-body p-0">
     <div class="accordion accordion-flush" id="accordionExample">
 
-      <div class="accordion-item">
-          <h2 class="accordion-header">
-            <button class="accordion-button <?= isActive('/choose_lots/')[2] ?>" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="<?= isActive('/choose_lots/')[1] ?>" aria-controls="collapseOne">
-              <i class="fa-solid fa-box" style="padding-right: 8px;"></i>Choose Lots
-            </button>
-          </h2>
-          <div id="collapseOne" class="accordion-collapse <?= isActive('/choose_lots/')[0] ?>" data-bs-parent="#accordionExample">
-            <div class="accordion-body">
-              <a class="nav-item" href="/iqcv2/choose_lots/inspection_result"><div>Parts for Inspect</div></a>
-              <a class="nav-item" href="/iqcv2/choose_lots/inspection_history"><div>Inspection History</div></a>
-            </div>
-          </div>
-      </div>
 
       <div class="accordion-item">
         <h2 class="accordion-header">
@@ -38,11 +37,71 @@ function isActive($urlPart) {
         </h2>
         <div id="collapseTwo" class="accordion-collapse <?= isActive('/registration/')[0] ?>" data-bs-parent="#accordionExample">
           <div class="accordion-body">
-              <a class="nav-item" href="/iqcv2/registration/parts_information"><div>Parts Information</div></a>
-              <a class="nav-item" href="/iqcv2/registration/check_items"><div>Check Items</div></a>
+            <?php 
+              if($_SESSION['isSuperAdmin']){
+                echo '<a class="nav-item" href="/iqcv2/manage/users"><div>Users</div></a>';
+              }
+            ?>
+
+            <?php 
+              if($eligible || $_SESSION['isAdmin']){
+                echo '<a class="nav-item" href="/iqcv2/registration/parts_information"><div>Parts Information</div></a> ';
+              }
+            ?>
+              
+              <!-- <a class="nav-item" href="/iqcv2/registration/check_items"><div>Check Items</div></a> -->
           </div>
         </div>
       </div>
+
+
+      <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button <?= isActive('/choose_lots/')[2] ?>" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="<?= isActive('/choose_lots/')[1] ?>" aria-controls="collapseOne">
+              <i class="fa-solid fa-box" style="padding-right: 8px;"></i>Choose Lots
+            </button>
+          </h2>
+          <div id="collapseOne" class="accordion-collapse <?= isActive('/choose_lots/')[0] ?>" data-bs-parent="#accordionExample">
+            <div class="accordion-body">
+              <a class="nav-item" href="/iqcv2/choose_lots/inspection_result"><div>Parts for Inspect</div></a>
+              
+            </div>
+          </div>
+      </div>
+      
+      <div class="accordion-item">
+        <h2 class="accordion-header">
+          <button class="accordion-button <?= isActive('/manage/')[2] ?>" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="<?= isActive('/manage/')[1] ?>" aria-controls="collapseFour">
+            <i class="fa-solid fa-clipboard-list" style="padding-right: 8px;"></i>Manage
+          </button>
+        </h2>
+        <div id="collapseFour" class="accordion-collapse <?= isActive('/manage/')[0] ?>" data-bs-parent="#accordionExample">
+          <div class="accordion-body">
+            <?php 
+              
+              if($eligible || $_SESSION['isAdmin']){
+                echo '<a class="nav-item" href="/iqcv2/manage/inspection_approval"><div>Inspection Approval</div></a>';
+              }
+            ?>
+
+            <?php 
+              if($_SESSION['isAdmin']){
+                echo '<a class="nav-item" href="/iqcv2/choose_lots/inspection_history"><div>Inspection History</div></a>';
+              }
+              ?>
+            
+          </div>
+        </div>
+        <?php
+        
+        ?>
+        <div id="collapseFour" class="accordion-collapse <?= isActive('/manage/')[0] ?>" data-bs-parent="#accordionExample">
+          <div class="accordion-body">
+            
+          </div>
+        </div>
+      </div>
+      
       
       <div class="accordion-item">
         <h2 class="accordion-header">
@@ -56,23 +115,8 @@ function isActive($urlPart) {
           </div>
         </div>
       </div>
-      <div class="accordion-item">
-        <h2 class="accordion-header">
-          <button class="accordion-button <?= isActive('/manage/')[2] ?>" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="<?= isActive('/manage/')[1] ?>" aria-controls="collapseFour">
-            <i class="fa-solid fa-clipboard-list" style="padding-right: 8px;"></i>Manage
-          </button>
-        </h2>
-        <div id="collapseFour" class="accordion-collapse <?= isActive('/manage/')[0] ?>" data-bs-parent="#accordionExample">
-          <div class="accordion-body">
-            <a class="nav-item" href="/iqcv2/manage/inspection_approval"><div>Inspection Approval</div></a>
-          </div>
-        </div>
-        <div id="collapseFour" class="accordion-collapse <?= isActive('/manage/')[0] ?>" data-bs-parent="#accordionExample">
-          <div class="accordion-body">
-            <a class="nav-item" href="/iqcv2/manage/users"><div>Users</div></a>
-          </div>
-        </div>
-      </div>
+
+      
       <div class="accordion-item">
         <h2 class="accordion-header">
           <button class="accordion-button <?= isActive('/report/')[2] ?>" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFive" aria-expanded="<?= isActive('/report/')[1] ?>" aria-controls="collapseFive">

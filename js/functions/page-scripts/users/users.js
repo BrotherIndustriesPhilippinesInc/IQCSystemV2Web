@@ -25,12 +25,15 @@ $(function(){
             { data: 'emailAddress', visible: true, searchable: true  },
             { data: 'section', visible: true, searchable: true  },
             { data: 'position', visible: true, searchable: true  },
+            { data: 'isAdmin', visible: true, searchable: true, render: function (data, type, row) {
+                return data ? '<i class="fa-solid fa-check"></i>' : '<i class="fa-solid fa-xmark"></i>';
+            }},
             {
                 data: null,
                 title: "Actions",
                 render: function (data, type, row) {
                     return `
-                        <button class="btn btn-primary" data-user_id="${row.id}" data-bs-toggle="modal" data-bs-target="#userEditModal">Edit</button>
+                        <button class="btn btn-primary" data-user_id="${row.id}" data-bs-toggle="modal" data-bs-target="#userUpdateModal">Edit</button>
                         <button class="deleteUser btn text-primary" data-user_id="${row.employeeNumber}">Delete</button>
                     `;
                 }
@@ -57,6 +60,7 @@ $(function(){
         const userData = {
             employeeNumber: $('#employeeNumber').val(),
             mesName: $('#emesName').val(),
+            isAdmin: $('#isAdmin').is(':checked') ? true : false
         };
         
         await apiCall('http://apbiphiqcwb01:1116/api/SystemApproverLists', 'POST', userData).then((response) => {
@@ -111,6 +115,45 @@ $(function(){
             });
 
         }
+    });
+
+    /* Update */
+    $(document).on('click', '[data-bs-target="#userUpdateModal"]', async function(){
+        const userId = $(this).data('user_id');
+        // Fetch user data
+        await apiCall(`http://apbiphiqcwb01:1116/api/SystemApproverLists/${userId}`, 'GET').then((userData) => {
+            // Populate modal fields
+            $('#updateEmployeeNumber').val(userData.employeeNumber);
+            $('#updateEmesName').val(userData.mesName);
+            $('#updateIsAdmin').prop('checked', userData.isAdmin);
+            $('#updateUserId').val(userData.id); // Hidden field to store user ID
+        });
+    });
+
+    $('#updateUser').on('click', async function(){
+        const userId = $('#updateUserId').val();
+        const userData = {
+            employeeNumber: $('#updateEmployeeNumber').val(),
+            mesName: $('#updateEmesName').val(),
+            isAdmin: $('#updateIsAdmin').is(':checked') ? true : false
+        };
+        
+        await apiCall(`http://apbiphiqcwb01:1116/api/SystemApproverLists/UpdateEmployee/${userId}`, 'POST', userData).then((response) => {
+            if(response && response.id){
+                Swal.fire({
+                    icon: 'success',
+                    title: 'User updated successfully',
+                    timerProgressBar: true,
+                    timer: 1000
+                });
+
+                table.ajax.reload(null, false); // Reload table data without resetting pagination
+                const userUpdateModal = bootstrap.Modal.getInstance(document.getElementById('userUpdateModal'));
+                if (userUpdateModal) {
+                    userUpdateModal.hide();
+                }
+            }
+        });
     });
 
     /* FUNCTIONS */
