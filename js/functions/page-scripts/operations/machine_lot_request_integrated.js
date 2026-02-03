@@ -1,11 +1,30 @@
 import apiCall from '../../apiCall.js';
 import {getCookie} from '../../helpers.js';
+import { sendToWebView, receiveFromWebView } from '../../WebViewInteraction.js';
 $(async function (){
     // INITIALIZE
+    // Call this ONCE when the page loads
+    receiveFromWebView("machineLotRequestDone", (data) => {
+        console.log("Callback triggered with:", data);
+
+        if (data.actionName === "machineLotRequestDone") {
+            swal.fire({
+                title: "Success",
+                text: "Machine Lot Request submitted successfully.",
+                icon: "success" // Don't forget the icon!
+            });
+        }
+    });
+
     let releaseReasons = await populateSelect("https://localhost:7246/api/ReleaseReasons", "#releaseReason", "id", "releaseReasonName");
     let whatFors = await populateRadio("https://localhost:7246/api/WhatFors", "#whatForContainer", "whatFor", "id", "whatForName");
 
+    const partCode = $("#partCode").text().trim();
+    let partDetails = await populateSelect("https://localhost:7246/api/PartsInformations/partcode?partCode=" + partCode, "#vendorName", "id", "supplierName");
 
+    
+
+    await fetchPartCodeDetails();
     // EVENTS
     $('input[name="whatFor"]').on('change', function() {
         const selectedWhatFor = $(this).val();
@@ -13,6 +32,14 @@ $(async function (){
         // Get details of WhatFor
         const selectedWhatForDetails = whatFors.find(whatFor => whatFor.id == selectedWhatFor);
         selectedWhatForDetails ? $('#remarks').val(selectedWhatForDetails.whatForDetails) : $('#remarks').val('');
+
+        // Get ReleaseReason
+        // const selectedReleaseReason = releaseReasons.find(reason => reason.id == selectedWhatForDetails.releaseReasonId);
+        // selectedReleaseReason ? $('#releaseReason').val(selectedReleaseReason.id) : $('#releaseReason').val('');
+
+        // Get Vendor
+        const selectedVendor = partDetails.find(vendor => vendor.id == selectedWhatForDetails.vendorId);
+        selectedVendor ? $('#vendorName').val(selectedVendor.id) : $('#vendorName').val('');
     });
 
     $('#submit').on('click', async function() {
@@ -21,17 +48,23 @@ $(async function (){
 
         const requestData = {
             "createdBy": createdBy,
-            "partCode": $('#partCode').val(),
+            "partCode": $('#partCodeInput').val(),
             "partName": $('#partName').val(),
-            "vendorName": $('#vendorName').val(),
+            "vendorName": $('#vendorName option:selected').text(),
             "quantity": $('#quantity').val(),
-            "releaseNo": $('#releaseNo').val(),
+            // "releaseNo": $('#releaseNo').val(),
             "yellowCard": $('#yellowCard').is(':checked'),
             "dciOtherNo": $('#dciNo').val(),
             "releaseReasonId": $('#releaseReason').val(),
             "whatForId": $('input[name="whatFor"]:checked').val(),
             "remarks": $('#remarks').val()
-          };
+        };
+
+        //check all required fields 
+        if (!requestData.partCode || !requestData.vendorName || !requestData.quantity || !requestData.releaseReasonId || !requestData.whatForId) {
+            alert("Please fill in all required fields.");
+            return;
+        }
 
         await submitMachineLotRequest(requestData);
     });
@@ -99,16 +132,33 @@ $(async function (){
                 cancelButtonText: "Cancel"
             }).then(async (result) => {
                 if (result.isConfirmed) {
-                    const response = await apiCall("https://localhost:7246/api/MachineLotRequests", "POST", data)
-                        .then(res => {
-                            swal.fire({
-                                title: "Success",
-                                text: "Machine Lot Request submitted successfully.",
-                                icon: "success",
-                                confirmButtonText: "OK"
-                            });
-                            // Optionally, reset the form here
-                        });
+                    //loading
+                    swal.fire({
+                        title: "Submitting...",
+                        text: "Please wait while we submit your request.",
+                        allowOutsideClick: false,
+                        didOpen: async () => {
+                            swal.showLoading();
+                            
+                            try {
+                                const response = await apiCall("https://localhost:7246/api/MachineLotRequests", "POST", data)
+                                    .then(res => {
+                                        sendToWebView("SubmitMachineLotRequest", {
+                                            data: res
+                                        });
+                                    });
+
+                            } catch (error) {
+                                swal.fire({
+                                    title: "Error",
+                                    text: "Failed to submit Machine Lot Request. Please try again.",
+                                    icon: "error",
+                                    confirmButtonText: "OK"
+                                });
+                            }
+
+                        }
+                    });
                 }
             });
             
@@ -124,5 +174,29 @@ $(async function (){
             throw error;
         }
     };
+
+    async function fetchPartCodeDetails() {
+        try {
+            const details = partDetails[0];
+            if (details) {
+
+                $('#partCodeInput').val(details.partCode);
+                $('#partName').val(details.partName);
+
+            }else{
+
+                swal.fire({
+                    title: "Not Found",
+                    text: `No details found for Part Code: ${partCode}`,
+                    icon: "warning",
+                    confirmButtonText: "OK"
+                });
+
+            }
+            return response;
+        } catch (error) {
+            
+        }
+    }
         
 });

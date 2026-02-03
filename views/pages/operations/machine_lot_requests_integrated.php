@@ -13,9 +13,8 @@
         <div class="">
             <div >
                 <?php
-                    //GET PART CODE FROM URL
-                    $partCode = isset($_GET['partCode']) ? $_GET['partCode'] : '';
-                    echo "<h4 class='text-center'> PART CODE: " . htmlspecialchars($partCode) . "</h4>";
+
+                    echo "<h4 class='text-center' id='partCode'></h4>";
                 ?>
                 <h4>What For</h4>
                 <div class="d-flex gap-2">
@@ -30,27 +29,28 @@
                     <div class="d-flex flex-column gap-3 flex-wrap">
 
                         <div class="col form-floating ">
-                            <input type="text" class="form-control" id="partCode" placeholder="">
+                            <input type="text" class="form-control" id="partCodeInput" placeholder="" disabled>
                             <label for="partCode">PART CODE</label>
                         </div>
 
                         <div class="col form-floating ">
-                            <input type="text" class="form-control" id="partName" placeholder="">
+                            <input type="text" class="form-control" id="partName" placeholder="" disabled>
                             <label for="partName">PART NAME</label>
                         </div>
 
-                        <div class="col form-floating">
+                        <div class="col">
+                            <select class="form-select" id="vendorName" aria-label="Default select example">
+                                <option selected>VENDOR NAME</option>
+                            </select>
+                        </div>
+
+                        <!-- <div class="col form-floating">
                             <input type="text" class="form-control" id="releaseNo" placeholder="">
                             <label for="releaseNo">RELEASE NO.</label>
-                        </div>
+                        </div> -->
 
                         <div class="col form-floating ">
-                            <input type="text" class="form-control" id="vendorName" placeholder="">
-                            <label for="vendorName">VENDOR NAME</label>
-                        </div>
-
-                        <div class="col form-floating ">
-                            <input type="text" class="form-control" id="quantity" placeholder="">
+                            <input type="number" class="form-control" id="quantity" placeholder="">
                             <label for="quantity">QUANTITY</label>
                         </div>
 

@@ -140,7 +140,7 @@ $_SESSION['position'] = $position;
 
             const userId = getCookie("userId");
             $.ajax({
-                url: 'https://localhost:7246/api/Accounts/' + userId, 
+                url: 'http://apbiphiqcwb01:1116/api/Accounts/' + userId, 
                 type: 'GET',
                 contentType: 'application/json',
                 success: function(response) {
