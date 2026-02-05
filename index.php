@@ -154,8 +154,16 @@ $_SESSION['position'] = $position;
                     if (fontColor) lessUpdates['@primary-text'] = bgColor;
                     if (fontColor) lessUpdates['@primary-misc'] = bgColor;
 
-                    if (Object.keys(lessUpdates).length > 0) {
+                    if (window.less && window.less.modifyVars) {
                         less.modifyVars(lessUpdates).catch(err => console.error(err));
+                    } else {
+                        // If it's not ready, wait for the library to signal it's done
+                        window.less = {
+                            async: true,
+                            callback: function() {
+                                less.modifyVars(lessUpdates);
+                            }
+                        };
                     }
 
                     // 2. FORCE OVERRIDE BOOTSTRAP (The Fix)

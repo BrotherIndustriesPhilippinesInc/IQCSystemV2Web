@@ -14,7 +14,8 @@
             <div >
                 <?php
 
-                    echo "<h4 class='text-center' id='partCode'></h4>";
+                    echo "<h3 class='text-center' id='partCode'></h3>";
+                echo "<h5 class='text-center' id='checkLot'></h5>";
                 ?>
                 <h4>What For</h4>
                 <div class="d-flex gap-2">

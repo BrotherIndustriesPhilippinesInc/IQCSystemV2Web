@@ -38,8 +38,8 @@ $(async function (){
         // selectedReleaseReason ? $('#releaseReason').val(selectedReleaseReason.id) : $('#releaseReason').val('');
 
         // Get Vendor
-        const selectedVendor = partDetails.find(vendor => vendor.id == selectedWhatForDetails.vendorId);
-        selectedVendor ? $('#vendorName').val(selectedVendor.id) : $('#vendorName').val('');
+        // const selectedVendor = partDetails.find(vendor => vendor.id == selectedWhatForDetails.vendorId);
+        // selectedVendor ? $('#vendorName').val(selectedVendor.id) : $('#vendorName').val('');
     });
 
     $('#submit').on('click', async function() {
@@ -57,7 +57,8 @@ $(async function (){
             "dciOtherNo": $('#dciNo').val(),
             "releaseReasonId": $('#releaseReason').val(),
             "whatForId": $('input[name="whatFor"]:checked').val(),
-            "remarks": $('#remarks').val()
+            "remarks": $('#remarks').val(),
+            "checkLot": $('#checkLot').text().trim()
         };
 
         //check all required fields 
@@ -141,8 +142,13 @@ $(async function (){
                             swal.showLoading();
                             
                             try {
+                                
                                 const response = await apiCall("https://localhost:7246/api/MachineLotRequests", "POST", data)
                                     .then(res => {
+
+                                        //Add checklot to res
+                                        res.checkLot = data.checkLot;
+                                        
                                         sendToWebView("SubmitMachineLotRequest", {
                                             data: res
                                         });

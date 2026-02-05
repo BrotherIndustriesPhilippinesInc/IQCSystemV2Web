@@ -15,26 +15,25 @@
 
     <div>
         <div>
-            <table class="table">
+            <table class="table table-hover" id="machine-lot-table">
                 <thead>
                     <tr>
+                        <th scope="col"></th>
+                        <th scope="col">RELEASE NO.</th>
                         <th scope="col">PART CODE</th>
                         <th scope="col">PART NAME</th>
                         <th scope="col">VENDOR NAME</th>
                         <th scope="col">DCI NO. / OTHER NO.</th>
                         <th scope="col">QUANTITY</th>
-                        <th scope="col">RELEASE NO.</th>
+                        <!-- <th scope="col">RELEASE NO.</th> -->
                         <th scope="col">RELEASE REASON</th>
                         <th scope="col">YELLOW CARD</th>
                     </tr>
                 </thead>
-                <tbody>
-
-                </tbody>
             </table>
         </div>
     </div>
 
 </body>
 
-<script type="module" defer src="/iqcv2/js/functions/page-scripts/inspection_approval/inspection_approval.js"></script>
+<script type="module" defer src="/iqcv2/js/functions/page-scripts/operations/machine_lot_request.js"></script>
