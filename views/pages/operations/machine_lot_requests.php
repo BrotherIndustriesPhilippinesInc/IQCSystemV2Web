@@ -25,9 +25,10 @@
                         <th scope="col">VENDOR NAME</th>
                         <th scope="col">DCI NO. / OTHER NO.</th>
                         <th scope="col">QUANTITY</th>
-                        <!-- <th scope="col">RELEASE NO.</th> -->
+                        
                         <th scope="col">RELEASE REASON</th>
                         <th scope="col">YELLOW CARD</th>
+                        <th scope="col">CREATED BY</th>
                     </tr>
                 </thead>
             </table>

@@ -351,3 +351,23 @@ label{
     color: @primary-text !important;
 }
 
+/* 1. Force the cell content to align top (just in case) */
+table.dataTable tbody td.select-checkbox {
+    vertical-align: top !important;
+}
+
+/* 2. Move the actual checkbox box (::before) to the top */
+table.dataTable tbody td.select-checkbox:before {
+    top: 15px !important;
+    /* Adjust this px value to match your padding */
+    margin-top: 0 !important;
+    /* Remove the default centering margin */
+}
+
+/* 3. Move the tick mark (::after) to the top as well */
+table.dataTable tbody td.select-checkbox:after {
+    top: 15px !important;
+    /* Must match the value in step 2 */
+    margin-top: -5px !important;
+    /* Keep slight adjustment for the tick mark alignment */
+}

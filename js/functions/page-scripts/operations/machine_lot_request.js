@@ -1,124 +1,170 @@
-
 import dataTablesInitialization from '../../dataTablesInitialization.js';
 import { sendToWebView, receiveFromWebView } from '../../WebViewInteraction.js';
 
-$(async function(){
-    // INITIALIZE
+$(async function () {
+
+    // --- 1. INITIALIZE ---
     const tableParams = {
-        ajax:{
-            url: "http://apbiphiqcwb01:1116/api/MachineLotRequests/", // your endpoint
+        ajax: {
+            // url: "http://apbiphiqcwb01:1116/api/MachineLotRequests/",
+            url: "https://localhost:7246/api/MachineLotRequests/",
             method: "GET",
             dataSrc: function (json) {
-                return json; // extract the data array from your JSON
+                return json;
             }
         },
         layout: {
-            topStart: {
-                //buttons: ['colvis']
-            },
-            topEnd:['search','pageLength'],
+            topStart: {},
+            topEnd: ['search', 'pageLength'],
         },
         select: {
-            style: 'multi', // Use 'os' for single/ctrl+click, 'multi' for checkboxes
+            style: 'multi',
             selector: 'td:first-child'
         },
         columns: [
-            //CHECK BOX
             {
-                // THE SELECT COLUMN
                 data: null,
                 defaultContent: '',
                 orderable: false,
-                className: 'select-checkbox', // This class tells DataTables to draw the box
+                className: 'select-checkbox',
                 width: "40px"
             },
             { data: 'releaseNo', visible: true, searchable: true },
-            { data: 'partCode', visible: true, searchable: true  },
-            { data: 'partName', visible: true, searchable: true  },
-            { data: 'vendorName', visible: true, searchable: true  },
-            { data: 'dciOtherNo', visible: true, searchable: true  },
-            { data: 'quantity', visible: true, searchable: true  },
-            // { data: 'releaseNo', visible: true, searchable: true  },
+            { data: 'partCode', visible: true, searchable: true },
+            { data: 'partName', visible: true, searchable: true },
+            { data: 'vendorName', visible: true, searchable: true },
+            { data: 'dciOtherNo', visible: true, searchable: true },
+            { data: 'quantity', visible: true, searchable: true },
             {
                 data: 'remarks',
-                width: "250px", // Limit this!
-                
+                width: "250px",
+                render: function (data) {
+                    // Safety: handle null remarks so "null" doesn't print
+                    return data ? data : "";
+                }
             },
             {
-
-                data: 'yellowCard', 
-                visible: true, 
-                searchable: true, 
-                render: function (data, type, row) {
-                    return data ? '<i class="fa-solid fa-check"></i>' : '<i class="fa-solid fa-xmark"></i>';
+                data: 'yellowCard',
+                visible: true,
+                searchable: true,
+                render: function (data) {
+                    return data ? '<i class="fa-solid fa-check text-warning"></i>' : '<i class="fa-solid fa-xmark text-secondary"></i>';
                 },
                 className: "text-center"
             },
-            
             {
-                data: null,
+                data: 'createdByFullName',
+                visible: true,
+                searchable: true,
+            },
+            {
+                data: null, // We don't need a specific data field here
                 title: "Actions",
+                orderable: false, // Actions shouldn't be sortable
                 render: function (data, type, row) {
+                    // Baka: relying on row.id inside the HTML is okay, but using the API later is better.
                     return `
-                        <button class="btn btn-primary editBtn" data-user_id="${row.id}" data-bs-toggle="modal" data-bs-target="#userUpdateModal">Edit</button>
-                        <button class="deleteBtn btn text-primary" data-user_id="${row.employeeNumber}">Delete</button>
+                        <button class="btn btn-primary btn-sm editBtn">Edit</button>
+                        <button class="btn btn-danger btn-sm deleteBtn">Delete</button>
                     `;
                 }
             }
-
         ],
-        createdRow: function(row, data, dataIndex) {
-            // Add a data attribute to the row for later use
-            // $(row).addClass('inspectionItemRow');
-            // $(row).attr('data-checkLot', data["checkLot"]);
-            // $(row).attr('data-partCode', data["partCode"]);
-            // $(row).attr('data-vendorCode', data["vendorCode"]);
-        },
         order: [[1, 'desc']]
-    }
+    };
+
     let table = dataTablesInitialization("#machine-lot-table", tableParams);
-    
-    // EVENT LISTENERS
+
+    // --- 2. HELPER FUNCTIONS ---
+
+    // Use this to keep things consistent
+    const reloadTable = () => {
+        // reload(callback, resetPaging) -> false keeps you on the current page
+        table.ajax.reload(null, false);
+        console.log("Table data refreshed.");
+    };
+
+    // --- 3. WEBVIEW LISTENERS ---
+
+    // When Edit is done
     receiveFromWebView("EditSuccess", async (data) => {
         swal.fire({
             icon: 'success',
-            title: 'Success',
-            text: 'Machine Lot Request has been updated successfully.'
-        }).then(() => {
-            table.ajax.reload(null, false); // Reload the table data without resetting pagination
-            
-        })
+            title: 'Updated',
+            text: 'Request updated successfully.',
+            timer: 1500,
+            showConfirmButton: false
+        });
+        reloadTable();
     });
-    $(document).on('click', '#machine-lot-table .editBtn', editData);
 
-    $(document).on('click', '#machine-lot-table .deleteBtn', deleteData);
+    // When Delete is done (You were missing this!)
+    receiveFromWebView("DeleteSuccess", async (data) => {
+        swal.fire({
+            icon: 'success',
+            title: 'Deleted',
+            text: 'Request removed successfully.',
+            timer: 1500,
+            showConfirmButton: false
+        });
+        reloadTable();
+    });
 
-    function editData(){
-        let releaseNo = $(this).closest('tr').find('td:eq(1)').text();
+    // When a NEW item is added (You should probably have this too)
+    receiveFromWebView("AddSuccess", async (data) => {
+        reloadTable();
+    });
 
-        //alert(releaseNo);
+    // --- 4. DOM EVENT LISTENERS ---
 
-        sendToWebView("openMachineLotRequestEditWinform", { releaseNo: releaseNo, modifiedBy: getCookie("CurrentUserEmpNo") });
-    }
+    // Use .on() delegated to the table ID so it works after pagination changes
+    $('#machine-lot-table tbody').on('click', '.editBtn', function () {
+        // THE CORRECT WAY: Get the data object for the row
+        let rowData = table.row($(this).parents('tr')).data();
 
-    function deleteData() {
-        let releaseNo = $(this).closest('tr').find('td:eq(1)').text();
+        if (!rowData) return; // Safety check
 
-        //alert(releaseNo);
+        sendToWebView("openMachineLotRequestEditWinform", {
+            releaseNo: rowData.releaseNo,
+            modifiedBy: getCookie("CurrentUserEmpNo")
+        });
+    });
+
+    $('#machine-lot-table tbody').on('click', '.deleteBtn', function () {
+        // THE CORRECT WAY
+        let rowData = table.row($(this).parents('tr')).data();
+
+        if (!rowData) return;
 
         swal.fire({
             title: 'Are you sure?',
-            text: "You won't be able to revert this!",
+            text: `You are about to delete ${rowData.releaseNo}. This cannot be undone!`,
             icon: 'warning',
             showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
             confirmButtonText: 'Yes, delete it!'
         }).then((result) => {
             if (result.isConfirmed) {
-                sendToWebView("openMachineLotRequestDeleteWinform", { releaseNo: releaseNo, modifiedBy: getCookie("CurrentUserEmpNo") });
+                // Notice I'm not waiting for success here. 
+                // The "DeleteSuccess" listener above handles the UI update after the WebView finishes.
+                sendToWebView("openMachineLotRequestDeleteWinform", {
+                    releaseNo: rowData.releaseNo,
+                    modifiedBy: getCookie("CurrentUserEmpNo")
+                });
             }
         });
+    });
 
-    }
+    // --- 5. OPTIONAL: POLLING (AUTO-UPDATE) ---
+    // Use this if you want the table to update automatically every 30 seconds
+    // irrespective of user action.
+    
+    setInterval(function(){
+        //Only reload if the user isn't currently selecting text or interacting
+        if(!document.hidden) { 
+            reloadTable();
+        }
+    }, 30000); // 30 seconds
+    
 });

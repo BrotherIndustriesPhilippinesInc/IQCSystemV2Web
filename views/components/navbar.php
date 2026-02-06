@@ -85,7 +85,7 @@ foreach($titles as $title){
             ?>
 
             <?php 
-              if($_SESSION['isAdmin']){
+              if($eligible || $_SESSION['isAdmin']){
                 echo '<a class="nav-item" href="/iqcv2/choose_lots/inspection_history"><div>Inspection History</div></a>';
               }
               ?>
@@ -117,7 +117,7 @@ foreach($titles as $title){
       </div>
 
       
-      <div class="accordion-item">
+      <!-- <div class="accordion-item">
         <h2 class="accordion-header">
           <button class="accordion-button <?= isActive('/report/')[2] ?>" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFive" aria-expanded="<?= isActive('/report/')[1] ?>" aria-controls="collapseFive">
           <i class="fa-solid fa-flag" style="padding-right: 8px;"></i>Report
@@ -128,7 +128,7 @@ foreach($titles as $title){
             <a class="nav-item" href="/iqcv2/report/inspection_background_report"><div>Inspection Background Report</div></a>
           </div>
         </div>
-      </div>
+      </div> -->
     </div>
   </div>
 </div>
