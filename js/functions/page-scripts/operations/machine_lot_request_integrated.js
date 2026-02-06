@@ -22,8 +22,6 @@ $(async function (){
     const partCode = $("#partCode").text().trim();
     let partDetails = await populateSelect("http://apbiphiqcwb01:1116/api/PartsInformations/partcode?partCode=" + partCode, "#vendorName", "id", "supplierName");
 
-    
-
     await fetchPartCodeDetails();
     // EVENTS
     $('input[name="whatFor"]').on('change', function() {
