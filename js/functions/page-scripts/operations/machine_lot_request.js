@@ -6,7 +6,7 @@ $(async function(){
     // INITIALIZE
     const tableParams = {
         ajax:{
-            url: "https://localhost:7246/api/MachineLotRequests", // your endpoint
+            url: "http://apbiphiqcwb01:1116/api/MachineLotRequests/", // your endpoint
             method: "GET",
             dataSrc: function (json) {
                 return json; // extract the data array from your JSON
