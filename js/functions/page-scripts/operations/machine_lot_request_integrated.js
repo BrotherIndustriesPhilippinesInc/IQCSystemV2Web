@@ -16,11 +16,11 @@ $(async function (){
         }
     });
 
-    let releaseReasons = await populateSelect("https://localhost:7246/api/ReleaseReasons", "#releaseReason", "id", "releaseReasonName");
-    let whatFors = await populateRadio("https://localhost:7246/api/WhatFors", "#whatForContainer", "whatFor", "id", "whatForName");
+    let releaseReasons = await populateSelect("http://apbiphiqcwb01:1116/api/ReleaseReasons", "#releaseReason", "id", "releaseReasonName");
+    let whatFors = await populateRadio("http://apbiphiqcwb01:1116/api/WhatFors", "#whatForContainer", "whatFor", "id", "whatForName");
 
     const partCode = $("#partCode").text().trim();
-    let partDetails = await populateSelect("https://localhost:7246/api/PartsInformations/partcode?partCode=" + partCode, "#vendorName", "id", "supplierName");
+    let partDetails = await populateSelect("http://apbiphiqcwb01:1116/api/PartsInformations/partcode?partCode=" + partCode, "#vendorName", "id", "supplierName");
 
     
 
@@ -143,7 +143,7 @@ $(async function (){
                             
                             try {
                                 
-                                const response = await apiCall("https://localhost:7246/api/MachineLotRequests", "POST", data)
+                                const response = await apiCall("http://apbiphiqcwb01:1116/api/MachineLotRequests", "POST", data)
                                     .then(res => {
 
                                         //Add checklot to res
@@ -199,9 +199,8 @@ $(async function (){
                 });
 
             }
-            return response;
         } catch (error) {
-            
+            console.error("Error in fetchPartCodeDetails:", error);
         }
     }
         
