@@ -70,7 +70,7 @@ $(function(){
             textColor: currentFontColor
         };
         $.ajax({
-            url: 'https://localhost:7246/api/Accounts/UpdateColor', // Replace with your server endpoint
+            url: 'http://apbiphiqcwb01:1116/api/Accounts/UpdateColor', // Replace with your server endpoint
             type: 'POST',
             contentType: 'application/json',
             data: JSON.stringify(update),

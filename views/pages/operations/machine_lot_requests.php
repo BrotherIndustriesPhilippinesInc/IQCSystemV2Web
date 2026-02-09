@@ -15,10 +15,13 @@
 
     <div>
         <div>
+            <button class="btn btn-primary" id="export-button">Export</button>
+        </div>
+        <div>
             <table class="table table-hover" id="machine-lot-table">
                 <thead>
                     <tr>
-                        <th scope="col"></th>
+                        <!-- <th scope="col"></th> -->
                         <th scope="col">RELEASE NO.</th>
                         <th scope="col">PART CODE</th>
                         <th scope="col">PART NAME</th>

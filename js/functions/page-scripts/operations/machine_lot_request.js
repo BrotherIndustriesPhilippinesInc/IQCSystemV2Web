@@ -6,8 +6,8 @@ $(async function () {
     // --- 1. INITIALIZE ---
     const tableParams = {
         ajax: {
-            // url: "http://apbiphiqcwb01:1116/api/MachineLotRequests/",
-            url: "https://localhost:7246/api/MachineLotRequests/",
+            url: "http://apbiphiqcwb01:1116/api/MachineLotRequests/",
+            //url: "https://localhost:7246/api/MachineLotRequests/",
             method: "GET",
             dataSrc: function (json) {
                 return json;
@@ -17,18 +17,18 @@ $(async function () {
             topStart: {},
             topEnd: ['search', 'pageLength'],
         },
-        select: {
-            style: 'multi',
-            selector: 'td:first-child'
-        },
+        // select: {
+        //     style: 'multi',
+        //     selector: 'td:first-child'
+        // },
         columns: [
-            {
-                data: null,
-                defaultContent: '',
-                orderable: false,
-                className: 'select-checkbox',
-                width: "40px"
-            },
+            // {
+            //     data: null,
+            //     defaultContent: '',
+            //     orderable: false,
+            //     className: 'select-checkbox',
+            //     width: "40px"
+            // },
             { data: 'releaseNo', visible: true, searchable: true },
             { data: 'partCode', visible: true, searchable: true },
             { data: 'partName', visible: true, searchable: true },
@@ -167,4 +167,9 @@ $(async function () {
         }
     }, 30000); // 30 seconds
     
+
+    $("#export-button").on("click", function() {
+        // Send this data to the WebView for exporting
+        sendToWebView("exportMachineLotRequests", {});
+    });
 });
