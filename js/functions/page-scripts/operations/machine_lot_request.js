@@ -58,19 +58,24 @@ $(async function () {
                 searchable: true,
             },
             {
+                data: 'exportedByFullName',
+                visible: true,
+                searchable: true,
+            },
+            {
                 data: null, // We don't need a specific data field here
                 title: "Actions",
                 orderable: false, // Actions shouldn't be sortable
                 render: function (data, type, row) {
                     // Baka: relying on row.id inside the HTML is okay, but using the API later is better.
                     return `
-                        <button class="btn btn-primary btn-sm editBtn">Edit</button>
-                        <button class="btn btn-danger btn-sm deleteBtn">Delete</button>
+                        <button class="btn btn-primary btn-sm w-100 editBtn">Edit</button>
+                        <button class="btn btn-danger btn-sm w-100 mt-1 deleteBtn">Delete</button>
                     `;
                 }
             }
         ],
-        order: [[1, 'desc']]
+        order: [[0, 'desc']]
     };
 
     let table = dataTablesInitialization("#machine-lot-table", tableParams);
@@ -170,6 +175,6 @@ $(async function () {
 
     $("#export-button").on("click", function() {
         // Send this data to the WebView for exporting
-        sendToWebView("exportMachineLotRequests", {});
+        sendToWebView("exportMachineLotRequests", { modifiedBy: getCookie("CurrentUserEmpNo") });
     });
 });

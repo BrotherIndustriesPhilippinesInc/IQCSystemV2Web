@@ -72,11 +72,10 @@
                             </select>
                         </div>
 
-                        <!-- <div class="col">
-                            <select class="form-select" id="whatFor" aria-label="Default select example">
-                                <option selected>WHAT FOR???</option>
-                            </select>
-                        </div> -->
+                        <div class="col form-floating">
+                                <input type="text" class="form-control" id="lotNumber" placeholder="LOT NUMBER">
+                                <label for="lotNumber">LOT NUMBER</label>
+                        </div>
 
                         <div class="col">
                             <textarea class="border-primary form-control" id="remarks" rows="5" cols="50" placeholder="Remarks"></textarea>

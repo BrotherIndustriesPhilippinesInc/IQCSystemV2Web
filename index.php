@@ -265,6 +265,9 @@ $_SESSION['position'] = $position;
             },
             '/iqcv2/operations/machine_lot_request_integrated' => function(){
                 include __DIR__ . '/views/pages/operations/machine_lot_requests_integrated.php';
+            },
+            '/iqcv2/registration/parts_information_standalone' => function () {
+                include __DIR__ . '/views/pages/registration/parts_information_standalone.php';
             }
         ];
 

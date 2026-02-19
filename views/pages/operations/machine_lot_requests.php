@@ -32,6 +32,7 @@
                         <th scope="col">RELEASE REASON</th>
                         <th scope="col">YELLOW CARD</th>
                         <th scope="col">CREATED BY</th>
+                        <th scope="col">EXPORTED BY</th>
                     </tr>
                 </thead>
             </table>

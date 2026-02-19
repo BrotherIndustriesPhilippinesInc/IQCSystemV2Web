@@ -56,7 +56,9 @@ $(async function (){
             "releaseReasonId": $('#releaseReason').val(),
             "whatForId": $('input[name="whatFor"]:checked').val(),
             "remarks": $('#remarks').val(),
-            "checkLot": $('#checkLot').text().trim()
+            "checkLot": $('#checkLot').text().trim(),
+
+            "lotNumber": $('#lotNumber').val().trim()
         };
 
         //check all required fields 
@@ -67,6 +69,28 @@ $(async function (){
 
         await submitMachineLotRequest(requestData);
     });
+
+    $("#lotNumber").on("input", function () {
+        const lotNumber = $(this).val().trim();
+
+        $('#remarks').val((i, currentVal) => {
+            // Regex logic:
+            // ^LOT NO\s*:\s*.*$ 
+            // ^ matches start of line (with 'm' flag)
+            // .* matches everything until the end of that line
+            const regex = /^LOT NO\s*:\s*.*$/m;
+            const newLine = `LOT NO : ${lotNumber}`;
+
+            // If the line exists, replace it. If not, append it.
+            if (regex.test(currentVal)) {
+                return currentVal.replace(regex, newLine);
+            } else {
+                return currentVal + "\n" + newLine;
+            }
+        });
+    });
+
+    
 
     
     // FUNCTIONS
@@ -142,8 +166,8 @@ $(async function (){
                             try {
                                 
                                 const response = await apiCall("http://apbiphiqcwb01:1116/api/MachineLotRequests", "POST", data)
+                                //const response = await apiCall("https://localhost:7246/api/MachineLotRequests", "POST", data)
                                     .then(res => {
-
                                         //Add checklot to res
                                         res.checkLot = data.checkLot;
                                         
@@ -160,7 +184,6 @@ $(async function (){
                                     confirmButtonText: "OK"
                                 });
                             }
-
                         }
                     });
                 }
@@ -201,5 +224,6 @@ $(async function (){
             console.error("Error in fetchPartCodeDetails:", error);
         }
     }
-        
+
+    
 });
