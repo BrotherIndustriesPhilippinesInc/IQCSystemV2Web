@@ -58,9 +58,49 @@ $(async function () {
                 searchable: true,
             },
             {
+                data: 'createdDate',
+                visible: true,
+                searchable: true,
+                render: function (data, type, row) {
+                    // If the date is null or empty, don't crash, just return blank
+                    if (!data) return '';
+
+                    // type === 'display' ensures we only format what the user sees, 
+                    // keeping the raw data for sorting and searching
+                    if (type === 'display') {
+                        const date = new Date(data);
+                        // Outputs: "Feb 20, 2026, 02:53 PM" (Adjusted to local browser time)
+                        return date.toLocaleString('en-US', {
+                            year: 'numeric',
+                            month: 'short',
+                            day: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit'
+                        });
+                    }
+                    return data;
+                }
+            },
+            {
                 data: 'exportedByFullName',
                 visible: true,
                 searchable: true,
+            },
+            {
+                data: 'exportDate',
+                visible: true,
+                searchable: true,
+                render: function (data, type, row) {
+                    if (!data) return '';
+                    if (type === 'display') {
+                        const date = new Date(data);
+                        return date.toLocaleString('en-US', {
+                            year: 'numeric', month: 'short', day: 'numeric',
+                            hour: '2-digit', minute: '2-digit'
+                        });
+                    }
+                    return data;
+                }
             },
             {
                 data: null, // We don't need a specific data field here

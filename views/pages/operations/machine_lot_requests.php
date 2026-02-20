@@ -32,7 +32,9 @@
                         <th scope="col">RELEASE REASON</th>
                         <th scope="col">YELLOW CARD</th>
                         <th scope="col">CREATED BY</th>
-                        <th scope="col">EXPORTED BY</th>
+                        <th scope="col">CREATED DATE</th>
+                        <th scope="col">LAST EXPORTED BY</th>
+                        <th scope="col">LAST EXPORTED DATE</th>
                     </tr>
                 </thead>
             </table>
