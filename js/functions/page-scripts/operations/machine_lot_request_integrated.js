@@ -58,11 +58,13 @@ $(async function (){
             "remarks": $('#remarks').val(),
             "checkLot": $('#checkLot').text().trim(),
 
-            "lotNumber": $('#lotNumber').val().trim()
+            "lotNumber": $('#lotNumber').val().trim(),
+
+            "deliveryDate": $('#deliveryDate').val() ? new Date($('#deliveryDate').val()).toISOString() : null
         };
 
         //check all required fields 
-        if (!requestData.partCode || !requestData.vendorName || !requestData.quantity || !requestData.releaseReasonId || !requestData.whatForId) {
+        if (!requestData.partCode || !requestData.vendorName || !requestData.quantity || !requestData.releaseReasonId || !requestData.whatForId || !requestData.lotNumber || !requestData.deliveryDate) {
             alert("Please fill in all required fields.");
             return;
         }

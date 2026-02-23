@@ -77,6 +77,11 @@
                                 <label for="lotNumber">LOT NUMBER</label>
                         </div>
 
+                        <div class="col form-floating">
+                                <input type="date" class="form-control" id="deliveryDate" placeholder="DELIVERY DATE">
+                                <label for="deliveryDate">DELIVERY DATE</label>
+                        </div>
+
                         <div class="col">
                             <textarea class="border-primary form-control" id="remarks" rows="5" cols="50" placeholder="Remarks"></textarea>
                         </div>
