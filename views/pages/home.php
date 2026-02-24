@@ -64,44 +64,44 @@ $primaryButton = $button->primaryButton("testButton", "Fetch Data");
                 </div>
             </div>
         </div>
+        
+        <div class="row mt-4 mb-5"> 
+            <div class="col-md-6">
+                <div class="chart-container mt-0">
+                    <h6 class="fw-bold text-secondary text-center mb-3">Trend Analysis</h6>
+                    <div class="chart-canvas-wrapper">
+                        <canvas id="inspectionChart"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="chart-container mt-0">
+                    <h6 class="fw-bold text-secondary text-center mb-3">Inspector Performance</h6>
+                    <div class="chart-canvas-wrapper">
+                        <canvas id="memberChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <div class="card shadow-sm mt-4 border-0">
             <div class="card-body">
                 <h5 class="card-title mb-3 fw-bold text-secondary">Daily Inspection Summary</h5>
                 <div class="table-responsive">
-                    <table id="summaryTable" class="table table-striped table-hover align-middle w-100">
-                        <thead class="table-light">
-                            <tr>
-                                <th>Date</th>
-                                <th>Inspector</th>
-                                <th>Category</th>
-                                <th>Total Inspections</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        </tbody>
-                    </table>
+                <table id="summaryTable" class="table table-striped table-hover align-middle w-100">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Date</th>
+                            <th>Inspector</th>
+                            <th>Supplier</th> <th>Category</th>
+                            <th>Total Inspections</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
                 </div>
             </div>
         </div>
-
-        <div class="row mt-4 mb-5"> <div class="col-md-6">
-        <div class="chart-container mt-0">
-            <h6 class="fw-bold text-secondary text-center mb-3">Trend Analysis</h6>
-            <div class="chart-canvas-wrapper">
-                <canvas id="inspectionChart"></canvas>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-6">
-        <div class="chart-container mt-0">
-            <h6 class="fw-bold text-secondary text-center mb-3">Inspector Performance</h6>
-            <div class="chart-canvas-wrapper">
-                <canvas id="memberChart"></canvas>
-            </div>
-        </div>
-    </div>
-</div>
     </div>
 
     <div id="loadingOverlay"
@@ -118,213 +118,188 @@ $primaryButton = $button->primaryButton("testButton", "Fetch Data");
     <script>
         document.addEventListener('DOMContentLoaded', () => {
 
-            flatpickr("#dateRange", { mode: "range", dateFormat: "Y-m-d" });
+flatpickr("#dateRange", { mode: "range", dateFormat: "Y-m-d" });
 
-            const loadingOverlay = document.getElementById("loadingOverlay");
-            const btn = document.getElementById("testButton");
-            const totalEl = document.getElementById("totalInspections");
-            const totalAp = document.getElementById("totalApproved");
+const loadingOverlay = document.getElementById("loadingOverlay");
+const btn = document.getElementById("testButton");
+const totalEl = document.getElementById("totalInspections");
+const totalAp = document.getElementById("totalApproved");
 
-            const inspectionCtx = document.getElementById("inspectionChart").getContext("2d");
-            const memberCtx = document.getElementById("memberChart").getContext("2d");
+const inspectionCtx = document.getElementById("inspectionChart").getContext("2d");
+const memberCtx = document.getElementById("memberChart").getContext("2d");
 
-            let inspectionChart = null;
-            let memberChart = null;
-            let dataTable = null; // Hold reference to your DataTable
+let inspectionChart = null;
+let memberChart = null;
+let dataTable = null;
 
-            function showLoading() {
-                if (!loadingOverlay) return;
-                btn.disabled = true;
-                loadingOverlay.style.display = "flex";
-                requestAnimationFrame(() => loadingOverlay.style.opacity = 1);
-            }
+function showLoading() {
+    if (!loadingOverlay) return;
+    btn.disabled = true;
+    loadingOverlay.style.display = "flex";
+    requestAnimationFrame(() => loadingOverlay.style.opacity = 1);
+}
 
-            function hideLoading() {
-                if (!loadingOverlay) return;
-                btn.disabled = false;
-                loadingOverlay.style.opacity = 0;
-                setTimeout(() => loadingOverlay.style.display = "none", 200);
-            }
+function hideLoading() {
+    if (!loadingOverlay) return;
+    btn.disabled = false;
+    loadingOverlay.style.opacity = 0;
+    setTimeout(() => loadingOverlay.style.display = "none", 200);
+}
 
-            async function fetchAll(startDate, endDate) {
-                if (!startDate) return alert("Select a valid date range!");
+async function fetchAll(startDate, endDate) {
+    if (!startDate) return alert("Select a valid date range!");
 
-                showLoading();
-                try {
-                    // I added the 4th fetch call here to hit your new summary API
-                    const [inspectionRes, approvalRes, memberRes, tableRes] = await Promise.all([
-                        fetch(`http://apbiphiqcwb01:1116/api/Dashboard/inspection-summary?startDate=${startDate}&endDate=${endDate}`),
-                        fetch(`http://apbiphiqcwb01:1116/api/Dashboard/approval-summary?startDate=${startDate}&endDate=${endDate}`),
-                        fetch(`http://apbiphiqcwb01:1116/api/Dashboard/members?startDate=${startDate}&endDate=${endDate}`),
-                        fetch(`http://apbiphiqcwb01:1116/api/Dashboard/summary?startDate=${startDate}&endDate=${endDate}`)
-                    ]);
+    showLoading();
+    try {
+        // Added the 5th fetch call for factory-specific trends
+        const [summaryRes, approvalRes, memberRes, tableRes, trendRes] = await Promise.all([
+            fetch(`http://apbiphiqcwb01:1116/api/Dashboard/inspection-summary?startDate=${startDate}&endDate=${endDate}`),
+            fetch(`http://apbiphiqcwb01:1116/api/Dashboard/approval-summary?startDate=${startDate}&endDate=${endDate}`),
+            fetch(`http://apbiphiqcwb01:1116/api/Dashboard/members?startDate=${startDate}&endDate=${endDate}`),
+            fetch(`http://apbiphiqcwb01:1116/api/Dashboard/summary?startDate=${startDate}&endDate=${endDate}`),
+            fetch(`http://apbiphiqcwb01:1116/api/Dashboard/inspection-trends?startDate=${startDate}&endDate=${endDate}`)
+        ]);
 
-                    if (!inspectionRes.ok || !approvalRes.ok || !memberRes.ok || !tableRes.ok) {
-                        throw new Error("Server returned an error");
-                    }
+        if (![summaryRes, approvalRes, memberRes, tableRes, trendRes].every(r => r.ok)) {
+            throw new Error("One or more server requests failed.");
+        }
 
-                    const inspectionData = await inspectionRes.json();
-                    const approvalData = await approvalRes.json();
-                    const membersData = await memberRes.json();
-                    const tableData = await tableRes.json();
+        const summaryData = await summaryRes.json();
+        const approvalData = await approvalRes.json();
+        const membersData = await memberRes.json();
+        const tableData = await tableRes.json();
+        const trendData = await trendRes.json();
 
-                    updateInspectionChart(inspectionData, approvalData);
-                    updateMemberChart(membersData);
+        // 1. Update Cards
+        totalEl.textContent = summaryData.totalInspections;
+        totalAp.textContent = approvalData.approvedCount;
 
-                    // Send the JSON array directly to the new DataTable function
-                    updateDataTable(tableData.data);
+        // 2. Update Charts & Table
+        updateInspectionChart(trendData); // Now uses the dedicated trend data
+        updateMemberChart(membersData);
+        updateDataTable(tableData.data);
 
-                    totalEl.textContent = inspectionData.totalInspections;
-                    totalAp.textContent = approvalData.approvedCount;
-
-                } catch (e) {
-                    console.error("Dashboard error:", e);
-                    alert("Failed to load dashboard data.");
-                } finally {
-                    hideLoading();
-                }
-            }
-
-            // --- CHART FUNCTIONS (Unchanged, just minimized for brevity) ---
-            function updateInspectionChart(inspectionData, approvalData) { /* Your existing logic */ }
-            function updateMemberChart(membersData) { /* Your existing logic */ }
-
-            // --- NEW: DATATABLE FUNCTION ---
-            function updateDataTable(data) {
-                // If the table doesn't exist yet, initialize it
-                if (!dataTable) {
-                    dataTable = $('#summaryTable').DataTable({
-                        data: data,
-                        columns: [
-                            // These keys MUST exactly match the camelCase JSON you pasted
-                            { data: 'iqcCheckDate' },
-                            { data: 'checkUser' },
-                            {
-                                data: 'qmLotCategory',
-                                title: 'Factory',
-                                render: function (data, type, row) {
-                                    // Adding a Bootstrap badge for style
-                                    return `<span class="badge bg-secondary">${data}</span>`;
-                                }
-                            },
-                            { data: 'totalInspections', className: 'text-center fw-bold' }
-                        ],
-                        order: [[0, 'desc']], // Order by Date descending
-                        pageLength: 10,
-                        destroy: true // Safety mechanism
-                    });
-                } else {
-                    // If the table already exists, clear the old data and inject the new data!
-                    dataTable.clear().rows.add(data).draw();
-                }
-            }
-
-            // FIXING YOUR TIMEZONE BUG. DO NOT REVERT THIS.
-            const today = new Date();
-            const past7 = new Date();
-            past7.setDate(today.getDate() - 7);
-
-            // Using Canadian locale natively outputs YYYY-MM-DD in LOCAL time.
-            const start = past7.toLocaleDateString('en-CA');
-            const end = today.toLocaleDateString('en-CA');
-
-            document.getElementById("dateRange").value = `${start} to ${end}`;
-            fetchAll(start, end);
-
-            // BUTTON RELOAD
-            btn.addEventListener("click", () => {
-                const [startStr, endStr] = document.getElementById("dateRange").value.split(" to ");
-                fetchAll(startStr, endStr || startStr);
-            });
-
-            // AUTO RELOAD EVERY 60 SECONDS
-            setInterval(() => {
-                const [startStr, endStr] = document.getElementById("dateRange").value.split(" to ");
-                fetchAll(startStr, endStr || startStr);
-            }, 60000);
-
-            function updateInspectionChart(inspectionData, approvalData) {
-        // Map the dates for the X-axis
-        const labels = inspectionData.dailyTrends.map(d => 
-            new Date(d.date).toLocaleDateString('en-CA') // Force local YYYY-MM-DD so they match properly
-        );
-
-        // Map the total inspection counts
-        const totals = inspectionData.dailyTrends.map(d => d.totalInspections);
-
-        // Map the approved counts, matching by date
-        const approved = labels.map(date => {
-            const row = approvalData.dailyTrends.find(a =>
-                new Date(a.date).toLocaleDateString('en-CA') === date
-            );
-            // BUG FIX: Changed from row.approvedCount to row.totalApproved to match our C# API!
-            return row ? row.approvedCount : 0; 
-        });
-
-        // Destroy the old chart instance before drawing a new one to prevent overlay glitches
-        if (inspectionChart) inspectionChart.destroy();
-
-        inspectionChart = new Chart(inspectionCtx, {
-            type: 'line',
-            data: {
-                labels: labels,
-                datasets: [
-                    {
-                        label: 'Total Inspections',
-                        data: totals,
-                        borderColor: '#4bc0c0',
-                        backgroundColor: 'rgba(75,192,192,0.25)',
-                        tension: 0.3,
-                        fill: true
-                    },
-                    {
-                        label: 'Approved Inspections',
-                        data: approved,
-                        borderColor: '#C11C84',
-                        backgroundColor: 'rgba(193, 28, 132, 0.25)',
-                        tension: 0.3,
-                        fill: true
-                    }
-                ]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false
-            }
-        });
+    } catch (e) {
+        console.error("Dashboard error:", e);
+        alert("Failed to load dashboard data.");
+    } finally {
+        hideLoading();
     }
+}
 
-    function updateMemberChart(membersData) {
-        // Sort highest to lowest
-        membersData.sort((a, b) => b.numberOfInspection - a.numberOfInspection);
+function updateInspectionChart(trendData) {
+    const data = trendData.dailyTrends;
 
-        const labels = membersData.map(m => m.user);
-        const values = membersData.map(m => m.numberOfInspection);
+    // Get unique sorted dates for X-axis
+    const labels = [...new Set(data.map(d => d.date))].sort();
+    // Get unique factory categories
+    const categories = [...new Set(data.map(d => d.category))];
 
-        if (memberChart) memberChart.destroy();
+    const colorPalette = ['#4bc0c0', '#C11C84', '#ffcd56', '#36a2eb', '#ff9f40'];
 
-        memberChart = new Chart(memberCtx, {
-            type: 'bar',
-            data: {
-                labels: labels,
-                datasets: [{
-                    label: 'Number of Inspections',
-                    data: values,
-                    backgroundColor: 'rgba(54, 162, 235, 0.7)', // Changed to a nice blue
-                    borderColor: 'rgba(54, 162, 235, 1)',
-                    borderWidth: 1
-                }]
+    const datasets = categories.map((cat, index) => {
+        return {
+            label: `Factory ${cat}`,
+            data: labels.map(date => {
+                const match = data.find(d => d.date === date && d.category === cat);
+                return match ? match.count : 0;
+            }),
+            borderColor: colorPalette[index % colorPalette.length],
+            backgroundColor: colorPalette[index % colorPalette.length] + '33',
+            tension: 0.3,
+            fill: false,
+            borderWidth: 2
+        };
+    });
+
+    if (inspectionChart) inspectionChart.destroy();
+
+    inspectionChart = new Chart(inspectionCtx, {
+        type: 'line',
+        data: { labels, datasets },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            interaction: { mode: 'index', intersect: false },
+            plugins: {
+                legend: { position: 'top' }
             },
-            options: { 
-                indexAxis: 'y', // Makes it a horizontal bar chart
-                responsive: true,
-                maintainAspectRatio: false
+            scales: {
+                y: { beginAtZero: true, ticks: { stepSize: 1 } }
             }
+        }
+    });
+}
+
+function updateMemberChart(membersData) {
+    membersData.sort((a, b) => b.numberOfInspection - a.numberOfInspection);
+    const labels = membersData.map(m => m.user);
+    const values = membersData.map(m => m.numberOfInspection);
+
+    if (memberChart) memberChart.destroy();
+    memberChart = new Chart(memberCtx, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Inspections',
+                data: values,
+                backgroundColor: 'rgba(54, 162, 235, 0.7)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: { 
+            indexAxis: 'y', 
+            responsive: true, 
+            maintainAspectRatio: false 
+        }
+    });
+}
+
+function updateDataTable(data) {
+    if (!dataTable) {
+        dataTable = $('#summaryTable').DataTable({
+            data: data,
+            columns: [
+                { data: 'iqcCheckDate' },
+                { data: 'checkUser' },
+                { data: 'supplierName' },
+                {
+                    data: 'qmLotCategory',
+                    render: d => `<span class="badge bg-secondary">${d}</span>`
+                },
+                { data: 'totalInspections', className: 'text-center fw-bold' }
+            ],
+            order: [[0, 'desc']],
+            pageLength: 10,
+            destroy: true
         });
+    } else {
+        dataTable.clear().rows.add(data).draw();
     }
+}
 
-        });
+// Initial setup logic (Timezone fix)
+const today = new Date();
+const past7 = new Date();
+past7.setDate(today.getDate() - 7);
+const start = past7.toLocaleDateString('en-CA');
+const end = today.toLocaleDateString('en-CA');
 
+document.getElementById("dateRange").value = `${start} to ${end}`;
+fetchAll(start, end);
+
+btn.addEventListener("click", () => {
+    const [s, e] = document.getElementById("dateRange").value.split(" to ");
+    fetchAll(s, e || s);
+});
+
+setInterval(() => {
+    const [s, e] = document.getElementById("dateRange").value.split(" to ");
+    fetchAll(s, e || s);
+}, 60000);
+});
 
     </script>
 </body>

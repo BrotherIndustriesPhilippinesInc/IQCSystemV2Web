@@ -24,6 +24,7 @@
                     <th scope="col">Inspector</th>
                     <th scope="col">Supervisor</th>
                     <th scope="col">Approver</th>
+                    <th scope="col">Approved Date</th>
                     <th scope="col">Remarks</th>
                     <th scope="col"></th>
                 </tr>

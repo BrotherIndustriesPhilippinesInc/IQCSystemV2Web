@@ -40,6 +40,12 @@ $(async function () {
         { data: 'checkUser', title: 'Inspector' },
         { data: 'supervisor', title: 'Supervisor' },
         { data: 'approver', title: 'Approver' },
+        { data: 'approvedDate', title: 'Approved Date', render: function (data, type, row) {
+                if (!data) return '';
+                let date = new Date(data);
+                return date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
+            } 
+        },
         { data: 'remarks', title: 'Remarks' },
 
         {
