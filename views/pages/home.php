@@ -91,10 +91,11 @@ $primaryButton = $button->primaryButton("testButton", "Fetch Data");
                 <table id="summaryTable" class="table table-striped table-hover align-middle w-100">
                     <thead class="table-light">
                         <tr>
-                            <th>Date</th>
-                            <th>Inspector</th>
-                            <th>Supplier</th> <th>Category</th>
-                            <th>Total Inspections</th>
+                        <th>Date</th>
+                        <th>Inspector</th>
+                        <th>Supplier</th> 
+                        <th>Part Code</th> <th>Category</th>
+                        <th>Total Inspections</th>
                         </tr>
                     </thead>
                     <tbody></tbody>
@@ -190,42 +191,77 @@ async function fetchAll(startDate, endDate) {
 function updateInspectionChart(trendData) {
     const data = trendData.dailyTrends;
 
-    // Get unique sorted dates for X-axis
+    // 1. Get unique Dates for X-Axis and unique Factories for the colors
     const labels = [...new Set(data.map(d => d.date))].sort();
-    // Get unique factory categories
-    const categories = [...new Set(data.map(d => d.category))];
+    const categories = [...new Set(data.map(d => d.category))].sort();
 
-    const colorPalette = ['#4bc0c0', '#C11C84', '#ffcd56', '#36a2eb', '#ff9f40'];
+    // 2. Define a strict color palette so lines and bars for the same factory match
+    const palette = [
+        { line: '#ff6384', bar: 'rgba(255, 99, 132, 0.6)' }, // Red
+        { line: '#36a2eb', bar: 'rgba(54, 162, 235, 0.6)' }, // Blue
+        { line: '#ffce56', bar: 'rgba(255, 206, 86, 0.6)' }, // Yellow
+        { line: '#4bc0c0', bar: 'rgba(75, 192, 192, 0.6)' }, // Teal
+        { line: '#9966ff', bar: 'rgba(153, 102, 255, 0.6)' } // Purple
+    ];
 
-    const datasets = categories.map((cat, index) => {
-        return {
-            label: `Factory ${cat}`,
+    let datasets = [];
+
+    // 3. Loop through EACH factory and create TWO datasets (One Line, One Bar)
+    categories.forEach((cat, index) => {
+        const colors = palette[index % palette.length];
+
+        // Dataset A: Line for Total
+        datasets.push({
+            type: 'line',
+            label: `Total - ${cat}`,
             data: labels.map(date => {
                 const match = data.find(d => d.date === date && d.category === cat);
-                return match ? match.count : 0;
+                return match ? match.totalCount : 0;
             }),
-            borderColor: colorPalette[index % colorPalette.length],
-            backgroundColor: colorPalette[index % colorPalette.length] + '33',
+            borderColor: colors.line,
+            backgroundColor: colors.line,
             tension: 0.3,
             fill: false,
-            borderWidth: 2
-        };
+            borderWidth: 2,
+            pointRadius: 4
+        });
+
+        // Dataset B: Bar for Approved
+        datasets.push({
+            type: 'bar',
+            label: `Approved - ${cat}`,
+            data: labels.map(date => {
+                const match = data.find(d => d.date === date && d.category === cat);
+                return match ? match.approvedCount : 0;
+            }),
+            backgroundColor: colors.bar,
+            borderColor: colors.line,
+            borderWidth: 1
+        });
     });
 
     if (inspectionChart) inspectionChart.destroy();
 
     inspectionChart = new Chart(inspectionCtx, {
-        type: 'line',
+        type: 'bar', 
         data: { labels, datasets },
         options: {
             responsive: true,
             maintainAspectRatio: false,
             interaction: { mode: 'index', intersect: false },
-            plugins: {
-                legend: { position: 'top' }
-            },
             scales: {
-                y: { beginAtZero: true, ticks: { stepSize: 1 } }
+                x: { 
+                    stacked: true // Stacks the factory bars on top of each other!
+                }, 
+                y: { 
+                    beginAtZero: true 
+                }
+            },
+            plugins: {
+                legend: {
+                    position: 'right', // Move legend to the right so it doesn't crush the chart height
+                    labels: { boxWidth: 12 }
+                }
             }
         }
     });
@@ -265,6 +301,10 @@ function updateDataTable(data) {
                 { data: 'iqcCheckDate' },
                 { data: 'checkUser' },
                 { data: 'supplierName' },
+                { 
+                    data: 'partCode', // ADDED THIS OBJECT
+                    render: d => `<strong>${d || 'N/A'}</strong>` 
+                },
                 {
                     data: 'qmLotCategory',
                     render: d => `<span class="badge bg-secondary">${d}</span>`
@@ -279,6 +319,7 @@ function updateDataTable(data) {
         dataTable.clear().rows.add(data).draw();
     }
 }
+
 
 // Initial setup logic (Timezone fix)
 const today = new Date();
